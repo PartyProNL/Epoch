@@ -1,10 +1,10 @@
 package me.partypronl.epoch.ui.routing
 
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import me.partypronl.epoch.ui.screens.HomePage
 
 @Composable
 fun NavigationGraph(
@@ -15,7 +15,7 @@ fun NavigationGraph(
         startDestination = Screen.Home.route
     ) {
         composable(Screen.Home.route) {
-            Text("Home")
+            HomePage()
         }
     }
 }
