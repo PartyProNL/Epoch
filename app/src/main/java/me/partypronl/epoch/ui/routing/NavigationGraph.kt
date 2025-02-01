@@ -15,7 +15,7 @@ fun NavigationGraph(
         startDestination = Screen.Home.route
     ) {
         composable(Screen.Home.route) {
-            HomePage()
+            HomePage(navController)
         }
     }
 }

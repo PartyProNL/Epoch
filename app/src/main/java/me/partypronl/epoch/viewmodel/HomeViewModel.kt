@@ -9,9 +9,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import me.partypronl.epoch.data.models.TimerModel
 import me.partypronl.epoch.data.services.TimerService
+import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel: ViewModel() {
+class HomeViewModel @Inject constructor(): ViewModel() {
     private val timerService = TimerService()
 
     private val _timers = MutableStateFlow<List<TimerModel>>(emptyList())
