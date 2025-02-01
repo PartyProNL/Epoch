@@ -16,6 +16,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             EpochTheme {
+                val navController = rememberNavController()
+                NavigationGraph(navController)
             }
         }
     }
