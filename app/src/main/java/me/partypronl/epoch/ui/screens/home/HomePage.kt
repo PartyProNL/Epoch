@@ -1,4 +1,4 @@
-package me.partypronl.epoch.ui.screens
+package me.partypronl.epoch.ui.screens.home
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
@@ -27,6 +28,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import me.partypronl.epoch.viewmodel.HomeViewModel
 import me.partypronl.epoch.R
+import me.partypronl.epoch.data.models.TimerModel
 
 @Composable
 fun HomePage(
@@ -45,8 +47,17 @@ fun HomePage(
             if(timers.isEmpty()) {
                 NoTimers(Modifier.padding(innerPadding))
             } else {
-//                ProjectsList(Modifier.padding(innerPadding).padding(horizontal = 16.dp), projects, navController)
+                TimersList(Modifier.padding(innerPadding).padding(horizontal = 16.dp), timers)
             }
+        }
+    }
+}
+
+@Composable
+fun TimersList(modifier: Modifier, timers: List<TimerModel>) {
+    LazyColumn(modifier) {
+        items(timers) { timer ->
+            TimerCard(Modifier.padding(bottom = 8.dp), timer)
         }
     }
 }
