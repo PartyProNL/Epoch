@@ -29,15 +29,22 @@ import me.partypronl.epoch.data.models.TimerModel
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.res.painterResource
+import me.partypronl.epoch.R
+import me.partypronl.epoch.util.DateUtil
 
 @Composable
 fun TimerCard(modifier: Modifier, timer: TimerModel) {
     var progress by remember { mutableFloatStateOf(timer.getProgress()) }
+    var timeLeft by remember { mutableLongStateOf(timer.ends - System.currentTimeMillis()) }
 
     LaunchedEffect(timer) {
         while (true) {
             progress = timer.getProgress()
+            timeLeft = timer.ends - System.currentTimeMillis()
+            if(timeLeft < 0) timeLeft = 0
             delay(1000L)
         }
     }
@@ -60,10 +67,18 @@ fun TimerCard(modifier: Modifier, timer: TimerModel) {
                 modifier = Modifier.padding(top = 8.dp, start = 8.dp)
             )
 
-            IconButton(
-                onClick = {}
-            ) {
-                Icon(Icons.Default.MoreVert, "Options")
+            Row {
+                IconButton(
+                    onClick = {}
+                ) {
+                    Icon(painterResource(R.drawable.outline_push_pin_24), "Pin")
+                }
+
+                IconButton(
+                    onClick = {}
+                ) {
+                    Icon(Icons.Default.MoreVert, "Options")
+                }
             }
         }
 
@@ -81,7 +96,7 @@ fun TimerCard(modifier: Modifier, timer: TimerModel) {
             )
 
             Text(
-                text = "1m 23d 13h 04s",
+                text = if(timeLeft >= 1000) DateUtil.formatTime(timeLeft) else "Done",
                 style = MaterialTheme.typography.displaySmall
             )
         }
