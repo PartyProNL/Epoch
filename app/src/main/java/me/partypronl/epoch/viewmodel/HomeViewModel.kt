@@ -32,4 +32,8 @@ class HomeViewModel @Inject constructor(): ViewModel() {
             _loadingTimers.value = false
         }
     }
+
+    fun updateTimers() {
+        loadTimers()
+    }
 }

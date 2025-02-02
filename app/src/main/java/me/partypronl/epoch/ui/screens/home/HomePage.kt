@@ -33,8 +33,9 @@ import androidx.navigation.NavController
 import me.partypronl.epoch.viewmodel.HomeViewModel
 import me.partypronl.epoch.R
 import me.partypronl.epoch.data.models.TimerModel
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,6 +47,7 @@ fun HomePage(
     val timers by homeViewModel.timers.collectAsState()
 
     val sheetState = rememberModalBottomSheetState()
+    val scope = rememberCoroutineScope()
     var showBottomSheet by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -68,7 +70,15 @@ fun HomePage(
     CreateTimerSheet(
         sheetState = sheetState,
         showBottomSheet = showBottomSheet,
-        onDismissRequest = { showBottomSheet = false }
+        onDismissRequest = { showBottomSheet = false },
+        onFinish = {
+            scope.launch { sheetState.hide() }.invokeOnCompletion {
+                if (!sheetState.isVisible) {
+                    showBottomSheet = false
+                    homeViewModel.updateTimers()
+                }
+            }
+        }
     )
 }
 

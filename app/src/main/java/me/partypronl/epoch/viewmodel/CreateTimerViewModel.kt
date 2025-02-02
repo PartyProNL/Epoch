@@ -20,24 +20,40 @@ class CreateTimerViewModel @Inject constructor(): ViewModel() {
     private val _ends = MutableStateFlow(null as Long?)
     val ends = _ends.asStateFlow()
 
+    private val _canCreate = MutableStateFlow(false)
+    val canCreate = _canCreate.asStateFlow()
+
     private val _creating = MutableStateFlow(false)
     val creating = _creating.asStateFlow()
 
     fun setName(name: String) {
         _name.value = name
+        updateCanCreate()
     }
 
     fun setEnds(ends: Long?) {
         _ends.value = ends
+        updateCanCreate()
     }
 
-    fun create() {
+    private fun updateCanCreate() {
+        _canCreate.value = false
+
+        if(_name.value == "") return
+        if(_name.value.isBlank()) return
+        if(_name.value.isEmpty()) return
+
+        if(_ends.value == null) return
+        if(_ends.value!! < System.currentTimeMillis()) return
+
+        _canCreate.value = true
+    }
+
+    suspend fun create() {
         if(_ends.value == null) return
 
-        viewModelScope.launch(Dispatchers.IO) {
-            _creating.value = true
-            timerService.createTimer(_name.value, _ends.value!!)
-            _creating.value = false
-        }
+        _creating.value = true
+        timerService.createTimer(_name.value, _ends.value!!)
+        _creating.value = false
     }
 }
