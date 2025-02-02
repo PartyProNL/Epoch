@@ -11,7 +11,7 @@ interface TimerDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(timerModel: TimerModel): Long
 
-    @Query("SELECT * FROM timer")
+    @Query("SELECT * FROM timer ORDER BY pinned DESC, ends ASC")
     suspend fun getAll(): List<TimerModel>
 
     @Query("SELECT * FROM timer WHERE id = :id")
