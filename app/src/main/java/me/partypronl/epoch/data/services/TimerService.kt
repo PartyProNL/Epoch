@@ -10,8 +10,14 @@ class TimerService {
         return timerDao.getAll()
     }
 
+    suspend fun setPinned(timerId: Long, pinned: Boolean) {
+        val timer = timerDao.getById(timerId) ?: return
+        timer.pinned = pinned
+        timerDao.insert(timer)
+    }
+
     suspend fun createTimer(name: String, ends: Long) {
-        val timerModel = TimerModel(0L, name, System.currentTimeMillis(), ends)
+        val timerModel = TimerModel(0L, name, System.currentTimeMillis(), ends, false)
         timerDao.insert(timerModel)
     }
 }
