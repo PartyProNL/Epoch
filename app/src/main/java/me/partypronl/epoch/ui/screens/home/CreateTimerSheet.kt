@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import me.partypronl.epoch.viewmodel.CreateTimerViewModel
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.painterResource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import me.partypronl.epoch.ui.util.DatePickerModal
@@ -43,6 +44,8 @@ import me.partypronl.epoch.util.DateUtil
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import me.partypronl.epoch.R
+import me.partypronl.epoch.ui.util.TimePickerModal
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,6 +58,7 @@ fun CreateTimerSheet(
 ) {
     val name by viewModel.name.collectAsState()
     val ends by viewModel.ends.collectAsState()
+    val endsTime by viewModel.endsTime.collectAsState()
     val canCreate by viewModel.canCreate.collectAsState()
     val creating by viewModel.creating.collectAsState()
 
@@ -104,6 +108,34 @@ fun CreateTimerSheet(
                     )
                 }
 
+                var showTimeModal by remember { mutableStateOf(false) }
+                OutlinedTextField(
+                    value = endsTime?.let { convertMillisToTime(it) } ?: "",
+                    onValueChange = {},
+                    label = { Text("Time (optional)") },
+                    trailingIcon = {
+                        Icon(painterResource(R.drawable.outline_timer_24), "Select time")
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .pointerInput(ends) {
+                            awaitEachGesture {
+                                awaitFirstDown(pass = PointerEventPass.Initial)
+                                val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
+                                if (upEvent != null) {
+                                    showTimeModal = true
+                                }
+                            }
+                        }
+                )
+
+                if(showTimeModal) {
+                    TimePickerModal(
+                        onTimeSelected = { viewModel.setEndsTime(it); showTimeModal = false },
+                        onDismiss = { showTimeModal = false }
+                    )
+                }
+
                 Row(
                     modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
                     horizontalArrangement = Arrangement.End
@@ -127,5 +159,10 @@ fun CreateTimerSheet(
 
 fun convertMillisToDate(millis: Long): String {
     val formatter = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())
+    return formatter.format(Date(millis))
+}
+
+fun convertMillisToTime(millis: Long): String {
+    val formatter = SimpleDateFormat("HH:mm", Locale.getDefault())
     return formatter.format(Date(millis))
 }
