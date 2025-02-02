@@ -6,8 +6,10 @@ import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
@@ -80,25 +82,53 @@ fun CreateTimerSheet(
                 )
 
                 var showDateModal by remember { mutableStateOf(false) }
-                OutlinedTextField(
-                    value = ends?.let { convertMillisToDate(it) } ?: "",
-                    onValueChange = {},
-                    label = { Text("Ends at") },
-                    trailingIcon = {
-                        Icon(Icons.Default.DateRange, "Select date")
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .pointerInput(ends) {
-                            awaitEachGesture {
-                                awaitFirstDown(pass = PointerEventPass.Initial)
-                                val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
-                                if (upEvent != null) {
-                                    showDateModal = true
+                var showTimeModal by remember { mutableStateOf(false) }
+
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
+                ) {
+                    OutlinedTextField(
+                        value = ends?.let { convertMillisToDate(it) } ?: "",
+                        onValueChange = {},
+                        label = { Text("Ends at") },
+                        trailingIcon = {
+                            Icon(Icons.Default.DateRange, "Select date")
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth(0.5f)
+                            .padding(end = 8.dp)
+                            .pointerInput(ends) {
+                                awaitEachGesture {
+                                    awaitFirstDown(pass = PointerEventPass.Initial)
+                                    val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
+                                    if (upEvent != null) {
+                                        showDateModal = true
+                                    }
                                 }
                             }
-                        }
-                )
+                    )
+
+                    OutlinedTextField(
+                        value = convertMillisToTime(endsTime),
+                        onValueChange = {},
+                        label = { Text("Time (optional)") },
+                        trailingIcon = {
+                            Icon(painterResource(R.drawable.outline_timer_24), "Select time")
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth(1f)
+                            .padding(start = 8.dp)
+                            .pointerInput(ends) {
+                                awaitEachGesture {
+                                    awaitFirstDown(pass = PointerEventPass.Initial)
+                                    val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
+                                    if (upEvent != null) {
+                                        showTimeModal = true
+                                    }
+                                }
+                            }
+                    )
+                }
 
                 if(showDateModal) {
                     DatePickerModal(
@@ -107,27 +137,6 @@ fun CreateTimerSheet(
                         selectableDates = DateUtil.afterTodaySelectableDates
                     )
                 }
-
-                var showTimeModal by remember { mutableStateOf(false) }
-                OutlinedTextField(
-                    value = endsTime?.let { convertMillisToTime(it) } ?: "",
-                    onValueChange = {},
-                    label = { Text("Time (optional)") },
-                    trailingIcon = {
-                        Icon(painterResource(R.drawable.outline_timer_24), "Select time")
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .pointerInput(ends) {
-                            awaitEachGesture {
-                                awaitFirstDown(pass = PointerEventPass.Initial)
-                                val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
-                                if (upEvent != null) {
-                                    showTimeModal = true
-                                }
-                            }
-                        }
-                )
 
                 if(showTimeModal) {
                     TimePickerModal(
