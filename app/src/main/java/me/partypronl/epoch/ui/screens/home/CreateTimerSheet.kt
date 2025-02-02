@@ -12,11 +12,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -36,6 +38,7 @@ import me.partypronl.epoch.viewmodel.CreateTimerViewModel
 import androidx.compose.runtime.setValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import me.partypronl.epoch.util.DateUtil
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -95,7 +98,8 @@ fun CreateTimerSheet(
                 if(showDateModal) {
                     DatePickerModal(
                         onDateSelected = { viewModel.setEnds(it) },
-                        onDismiss = { showDateModal = false }
+                        onDismiss = { showDateModal = false },
+                        selectableDates = DateUtil.afterTodaySelectableDates
                     )
                 }
 
@@ -124,9 +128,12 @@ fun CreateTimerSheet(
 @Composable
 fun DatePickerModal(
     onDateSelected: (Long?) -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    selectableDates: SelectableDates? = null
 ) {
-    val datePickerState = rememberDatePickerState()
+    val datePickerState = rememberDatePickerState(
+        selectableDates = selectableDates ?: DatePickerDefaults.AllDates
+    )
 
     DatePickerDialog(
         onDismissRequest = onDismiss,
@@ -142,9 +149,11 @@ fun DatePickerModal(
             TextButton(onClick = onDismiss) {
                 Text("Cancel")
             }
-        }
+        },
     ) {
-        DatePicker(state = datePickerState)
+        DatePicker(
+            state = datePickerState
+        )
     }
 }
 
