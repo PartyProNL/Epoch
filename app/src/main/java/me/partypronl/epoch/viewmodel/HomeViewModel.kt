@@ -45,4 +45,11 @@ class HomeViewModel @Inject constructor(): ViewModel() {
             _timers.value = timerService.getTimers()
         }
     }
+
+    fun deleteTimer(timerId: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            timerService.deleteTimer(timerId)
+            _timers.value = timerService.getTimers()
+        }
+    }
 }

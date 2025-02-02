@@ -81,7 +81,7 @@ fun TimerCard(modifier: Modifier, timer: TimerModel, homeViewModel: HomeViewMode
                         Icon(painterResource(R.drawable.outline_push_pin_24), "Pin")
                     }
                 }
-                
+
                 IconButton(
                     onClick = {}
                 ) {
