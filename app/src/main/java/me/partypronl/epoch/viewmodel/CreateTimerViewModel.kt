@@ -17,16 +17,26 @@ class CreateTimerViewModel @Inject constructor(): ViewModel() {
     private val _name = MutableStateFlow("")
     val name = _name.asStateFlow()
 
-    private val _ends = MutableStateFlow(0L)
+    private val _ends = MutableStateFlow(null as Long?)
     val ends = _ends.asStateFlow()
 
     private val _creating = MutableStateFlow(false)
     val creating = _creating.asStateFlow()
 
+    fun setName(name: String) {
+        _name.value = name
+    }
+
+    fun setEnds(ends: Long?) {
+        _ends.value = ends
+    }
+
     fun create() {
+        if(_ends.value == null) return
+
         viewModelScope.launch(Dispatchers.IO) {
             _creating.value = true
-            timerService.createTimer(_name.value, _ends.value)
+            timerService.createTimer(_name.value, _ends.value!!)
             _creating.value = false
         }
     }

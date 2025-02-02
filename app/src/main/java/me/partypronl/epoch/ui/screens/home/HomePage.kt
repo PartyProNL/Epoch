@@ -11,15 +11,19 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -29,7 +33,10 @@ import androidx.navigation.NavController
 import me.partypronl.epoch.viewmodel.HomeViewModel
 import me.partypronl.epoch.R
 import me.partypronl.epoch.data.models.TimerModel
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomePage(
     navController: NavController,
@@ -38,20 +45,31 @@ fun HomePage(
     val loadingTimers by homeViewModel.loadingTimers.collectAsState()
     val timers by homeViewModel.timers.collectAsState()
 
+    val sheetState = rememberModalBottomSheetState()
+    var showBottomSheet by remember { mutableStateOf(false) }
+
     Scaffold(
-        floatingActionButton = { CreateTimerFAB() },
+        floatingActionButton = {
+            CreateTimerFAB { showBottomSheet = true }
+        },
         containerColor = MaterialTheme.colorScheme.surfaceContainer
     ) { innerPadding ->
         if(loadingTimers) {
             LoadingTimers(Modifier.padding(innerPadding))
         } else {
             if(timers.isEmpty()) {
-                NoTimers(Modifier.padding(innerPadding))
+                NoTimers(Modifier.padding(innerPadding)) { showBottomSheet = true }
             } else {
                 TimersList(Modifier.padding(innerPadding).padding(horizontal = 16.dp), timers)
             }
         }
     }
+
+    CreateTimerSheet(
+        sheetState = sheetState,
+        showBottomSheet = showBottomSheet,
+        onDismissRequest = { showBottomSheet = false }
+    )
 }
 
 @Composable
@@ -69,7 +87,7 @@ fun LoadingTimers(modifier: Modifier) {
 }
 
 @Composable
-fun NoTimers(modifier: Modifier) {
+fun NoTimers(modifier: Modifier, openCreateSheet: () -> Unit) {
     Column(
         modifier = modifier.padding(horizontal = 16.dp).fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -86,24 +104,24 @@ fun NoTimers(modifier: Modifier) {
         Text("Create your first with the button below")
 
         Spacer(Modifier.height(12.dp))
-        CreateTimerButton()
+        CreateTimerButton(openCreateSheet)
     }
 }
 
 @Composable
-fun CreateTimerButton() {
+fun CreateTimerButton(openCreateSheet: () -> Unit) {
     Button(
-        onClick = {},
+        onClick = openCreateSheet,
     ) {
         Text("Create timer")
     }
 }
 
 @Composable
-fun CreateTimerFAB() {
+fun CreateTimerFAB(openCreateSheet: () -> Unit) {
     ExtendedFloatingActionButton(
         text = { Text("Create") },
         icon = { Icon(painterResource(R.drawable.baseline_timer_24), "Timer") },
-        onClick = {}
+        onClick = openCreateSheet
     )
 }
