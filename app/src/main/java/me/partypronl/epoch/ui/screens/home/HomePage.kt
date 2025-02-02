@@ -17,9 +17,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,12 +33,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import me.partypronl.epoch.viewmodel.HomeViewModel
+import me.partypronl.epoch.viewmodel.home.HomeViewModel
 import me.partypronl.epoch.R
 import me.partypronl.epoch.data.models.TimerModel
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import kotlinx.coroutines.launch
+import me.partypronl.epoch.viewmodel.home.HomeEvent
+import me.partypronl.epoch.viewmodel.home.HomeEventType
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,11 +55,22 @@ fun HomePage(
     val scope = rememberCoroutineScope()
     var showBottomSheet by remember { mutableStateOf(false) }
 
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(Unit) {
+        homeViewModel.snackbarNotifications.collect { event ->
+            scope.launch {
+                showSnackbar(event, snackbarHostState)
+            }
+        }
+    }
+
     Scaffold(
         floatingActionButton = {
             CreateTimerFAB { showBottomSheet = true }
         },
-        containerColor = MaterialTheme.colorScheme.surfaceContainer
+        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { innerPadding ->
         if(loadingTimers) {
             LoadingTimers(Modifier.padding(innerPadding))
@@ -80,6 +96,23 @@ fun HomePage(
             }
         }
     )
+}
+
+suspend fun showSnackbar(event: HomeEvent, snackbarHostState: SnackbarHostState) {
+    when(event.type) {
+        HomeEventType.UNPIN -> {
+            snackbarHostState.showSnackbar("Unpinned timer '${event.affectedTimer.name}'")
+        }
+        HomeEventType.PIN -> {
+            snackbarHostState.showSnackbar("Pinned timer '${event.affectedTimer.name}'")
+        }
+        HomeEventType.DELETE -> {
+            snackbarHostState.showSnackbar("Deleted timer '${event.affectedTimer.name}'")
+        }
+        HomeEventType.CREATE -> {
+
+        }
+    }
 }
 
 @Composable

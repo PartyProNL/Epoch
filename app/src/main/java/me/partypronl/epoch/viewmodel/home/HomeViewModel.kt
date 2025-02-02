@@ -1,10 +1,12 @@
-package me.partypronl.epoch.viewmodel
+package me.partypronl.epoch.viewmodel.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import me.partypronl.epoch.data.models.TimerModel
@@ -39,19 +41,26 @@ class HomeViewModel @Inject constructor(): ViewModel() {
         }
     }
 
-    fun setPinned(timerId: Long, pinned: Boolean) {
+    fun setPinned(timer: TimerModel, pinned: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
-            timerService.setPinned(timerId, pinned)
+            timerService.setPinned(timer.id, pinned)
             _timers.value = timerService.getTimers()
+
+            if(pinned) _snackbarNotifications.emit(HomeEvent(HomeEventType.PIN, timer))
+            else _snackbarNotifications.emit(HomeEvent(HomeEventType.UNPIN, timer))
         }
     }
 
     private val _deletingTimer = MutableStateFlow(false)
     val deletingTimer = _deletingTimer.asStateFlow()
 
-    suspend fun deleteTimer(timerId: Long) {
+    suspend fun deleteTimer(timer: TimerModel) {
         _deletingTimer.value = true
-        timerService.deleteTimer(timerId)
+        timerService.deleteTimer(timer.id)
         _deletingTimer.value = false
+        _snackbarNotifications.emit(HomeEvent(HomeEventType.DELETE, timer))
     }
+
+    private val _snackbarNotifications = MutableSharedFlow<HomeEvent>()
+    val snackbarNotifications = _snackbarNotifications.asSharedFlow()
 }

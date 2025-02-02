@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
@@ -38,7 +37,7 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.hilt.navigation.compose.hiltViewModel
 import me.partypronl.epoch.R
 import me.partypronl.epoch.util.DateUtil
-import me.partypronl.epoch.viewmodel.HomeViewModel
+import me.partypronl.epoch.viewmodel.home.HomeViewModel
 
 @Composable
 fun TimerCard(modifier: Modifier, timer: TimerModel, homeViewModel: HomeViewModel = hiltViewModel()) {
@@ -77,13 +76,13 @@ fun TimerCard(modifier: Modifier, timer: TimerModel, homeViewModel: HomeViewMode
             Row {
                 if(timer.pinned) {
                     IconButton(
-                        onClick = { homeViewModel.setPinned(timer.id, false) }
+                        onClick = { homeViewModel.setPinned(timer, false) }
                     ) {
                         Icon(painterResource(R.drawable.baseline_push_pin_24), "Pin")
                     }
                 } else {
                     IconButton(
-                        onClick = { homeViewModel.setPinned(timer.id, true) }
+                        onClick = { homeViewModel.setPinned(timer, true) }
                     ) {
                         Icon(painterResource(R.drawable.outline_push_pin_24), "Pin")
                     }

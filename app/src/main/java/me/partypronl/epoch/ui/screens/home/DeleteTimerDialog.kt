@@ -10,7 +10,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import me.partypronl.epoch.data.models.TimerModel
-import me.partypronl.epoch.viewmodel.HomeViewModel
+import me.partypronl.epoch.viewmodel.home.HomeViewModel
 import androidx.compose.runtime.getValue
 
 @Composable
@@ -29,7 +29,7 @@ fun DeleteTimerDialog(timer: TimerModel, onClose: () -> Unit, viewModel: HomeVie
             enabled = !deleting,
             onClick = {
                 scope.launch(Dispatchers.IO) {
-                    viewModel.deleteTimer(timer.id)
+                    viewModel.deleteTimer(timer)
                     onClose()
                     viewModel.updateTimers()
                 }
