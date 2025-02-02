@@ -7,7 +7,7 @@ import me.partypronl.epoch.data.models.TimerModel
 
 @Database(entities = [
     TimerModel::class
-], version = 1)
+], version = 2)
 abstract class EpochDatabase: RoomDatabase() {
     abstract fun timerDao(): TimerDao
 }

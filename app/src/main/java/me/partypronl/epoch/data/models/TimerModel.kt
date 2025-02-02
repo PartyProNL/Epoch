@@ -8,7 +8,8 @@ data class TimerModel(
     @PrimaryKey(autoGenerate = true) val id: Long = 0L,
     val name: String,
     val started: Long,
-    val ends: Long
+    val ends: Long,
+    var pinned: Boolean
 ) {
   fun getProgress(): Float {
       val currentTime = System.currentTimeMillis()

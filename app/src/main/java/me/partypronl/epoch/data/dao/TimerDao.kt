@@ -13,4 +13,7 @@ interface TimerDao {
 
     @Query("SELECT * FROM timer")
     suspend fun getAll(): List<TimerModel>
+
+    @Query("SELECT * FROM timer WHERE id = :id")
+    suspend fun getById(id: Long): TimerModel?
 }
