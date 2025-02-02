@@ -48,6 +48,7 @@ import java.util.Date
 import java.util.Locale
 import me.partypronl.epoch.R
 import me.partypronl.epoch.ui.util.TimePickerModal
+import java.util.TimeZone
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -173,5 +174,6 @@ fun convertMillisToDate(millis: Long): String {
 
 fun convertMillisToTime(millis: Long): String {
     val formatter = SimpleDateFormat("HH:mm", Locale.getDefault())
+    formatter.timeZone = TimeZone.getTimeZone("UTC")
     return formatter.format(Date(millis))
 }
