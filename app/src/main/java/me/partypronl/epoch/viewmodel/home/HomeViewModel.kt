@@ -61,6 +61,14 @@ class HomeViewModel @Inject constructor(): ViewModel() {
         _snackbarNotifications.emit(HomeEvent(HomeEventType.DELETE, timer))
     }
 
+    fun undoDelete(timer: TimerModel) {
+        viewModelScope.launch(Dispatchers.IO) {
+            timerService.undoDeleteTimer(timer)
+            _timers.value = timerService.getTimers()
+            _snackbarNotifications.emit(HomeEvent(HomeEventType.DELETE_UNDONE, timer))
+        }
+    }
+
     private val _snackbarNotifications = MutableSharedFlow<HomeEvent>()
     val snackbarNotifications = _snackbarNotifications.asSharedFlow()
 }

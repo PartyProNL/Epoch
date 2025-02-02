@@ -19,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -38,6 +39,7 @@ import me.partypronl.epoch.R
 import me.partypronl.epoch.data.models.TimerModel
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
 import me.partypronl.epoch.viewmodel.home.HomeEvent
 import me.partypronl.epoch.viewmodel.home.HomeEventType
@@ -60,7 +62,11 @@ fun HomePage(
     LaunchedEffect(Unit) {
         homeViewModel.snackbarNotifications.collect { event ->
             scope.launch {
-                showSnackbar(event, snackbarHostState)
+                showSnackbar(
+                    event = event,
+                    snackbarHostState = snackbarHostState,
+                    onUndoDelete = { homeViewModel.undoDelete(it) }
+                )
             }
         }
     }
@@ -98,7 +104,7 @@ fun HomePage(
     )
 }
 
-suspend fun showSnackbar(event: HomeEvent, snackbarHostState: SnackbarHostState) {
+suspend fun showSnackbar(event: HomeEvent, snackbarHostState: SnackbarHostState, onUndoDelete: (TimerModel) -> Unit) {
     when(event.type) {
         HomeEventType.UNPIN -> {
             snackbarHostState.showSnackbar("Unpinned timer '${event.affectedTimer.name}'")
@@ -107,7 +113,17 @@ suspend fun showSnackbar(event: HomeEvent, snackbarHostState: SnackbarHostState)
             snackbarHostState.showSnackbar("Pinned timer '${event.affectedTimer.name}'")
         }
         HomeEventType.DELETE -> {
-            snackbarHostState.showSnackbar("Deleted timer '${event.affectedTimer.name}'")
+            val result = snackbarHostState.showSnackbar(
+                "Deleted timer '${event.affectedTimer.name}'",
+                "Undo"
+            )
+
+            if(result == SnackbarResult.ActionPerformed) {
+                onUndoDelete(event.affectedTimer)
+            }
+        }
+        HomeEventType.DELETE_UNDONE -> {
+            snackbarHostState.showSnackbar("Undid deletion of timer '${event.affectedTimer.name}'")
         }
         HomeEventType.CREATE -> {
 

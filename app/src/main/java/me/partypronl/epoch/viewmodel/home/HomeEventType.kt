@@ -4,5 +4,6 @@ enum class HomeEventType {
     PIN,
     UNPIN,
     DELETE,
+    DELETE_UNDONE,
     CREATE
 }

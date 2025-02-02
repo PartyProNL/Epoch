@@ -24,4 +24,8 @@ class TimerService {
     suspend fun deleteTimer(timerId: Long) {
         timerDao.deleteById(timerId)
     }
+
+    suspend fun undoDeleteTimer(timer: TimerModel) {
+        timerDao.insert(timer)
+    }
 }
