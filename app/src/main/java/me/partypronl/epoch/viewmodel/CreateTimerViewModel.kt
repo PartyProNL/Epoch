@@ -1,12 +1,9 @@
 package me.partypronl.epoch.viewmodel
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 import me.partypronl.epoch.data.services.TimerService
 import javax.inject.Inject
 
@@ -65,5 +62,9 @@ class CreateTimerViewModel @Inject constructor(): ViewModel() {
         _creating.value = true
         timerService.createTimer(_name.value, _ends.value!! + _endsTime.value)
         _creating.value = false
+
+        _name.value = ""
+        _ends.value = null
+        _endsTime.value = 0L
     }
 }
