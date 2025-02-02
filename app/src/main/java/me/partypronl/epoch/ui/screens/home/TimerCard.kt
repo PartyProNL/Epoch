@@ -1,11 +1,20 @@
 package me.partypronl.epoch.ui.screens.home
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,6 +29,7 @@ import me.partypronl.epoch.data.models.TimerModel
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.ui.Alignment
 
 @Composable
 fun TimerCard(modifier: Modifier, timer: TimerModel) {
@@ -37,22 +47,42 @@ fun TimerCard(modifier: Modifier, timer: TimerModel) {
             .clip(MaterialTheme.shapes.large)
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.surfaceContainerLowest, MaterialTheme.shapes.large)
-            .padding(horizontal = 16.dp, vertical = 16.dp)
+            .padding(horizontal = 8.dp, vertical = 8.dp)
     ) {
-        Text(
-            text = timer.name,
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onPrimaryContainer
-        )
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = timer.name,
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                modifier = Modifier.padding(top = 8.dp, start = 8.dp)
+            )
+
+            IconButton(
+                onClick = {}
+            ) {
+                Icon(Icons.Default.MoreVert, "Options")
+            }
+        }
+
 
         Box(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().padding(8.dp),
+            contentAlignment = Alignment.Center
         ) {
             CircularProgressIndicator(
                 progress = {
                     progress
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxSize().aspectRatio(1F),
+                trackColor = MaterialTheme.colorScheme.primaryContainer
+            )
+
+            Text(
+                text = "1m 23d 13h 04s",
+                style = MaterialTheme.typography.displaySmall
             )
         }
     }
