@@ -38,6 +38,7 @@ import me.partypronl.epoch.viewmodel.CreateTimerViewModel
 import androidx.compose.runtime.setValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import me.partypronl.epoch.ui.util.DatePickerModal
 import me.partypronl.epoch.util.DateUtil
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -121,39 +122,6 @@ fun CreateTimerSheet(
                 }
             }
         }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun DatePickerModal(
-    onDateSelected: (Long?) -> Unit,
-    onDismiss: () -> Unit,
-    selectableDates: SelectableDates? = null
-) {
-    val datePickerState = rememberDatePickerState(
-        selectableDates = selectableDates ?: DatePickerDefaults.AllDates
-    )
-
-    DatePickerDialog(
-        onDismissRequest = onDismiss,
-        confirmButton = {
-            TextButton(onClick = {
-                onDateSelected(datePickerState.selectedDateMillis)
-                onDismiss()
-            }) {
-                Text("OK")
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text("Cancel")
-            }
-        },
-    ) {
-        DatePicker(
-            state = datePickerState
-        )
     }
 }
 
