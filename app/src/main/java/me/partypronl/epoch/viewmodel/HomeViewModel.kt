@@ -34,6 +34,15 @@ class HomeViewModel @Inject constructor(): ViewModel() {
     }
 
     fun updateTimers() {
-        loadTimers()
+        viewModelScope.launch(Dispatchers.IO) {
+            _timers.value = timerService.getTimers()
+        }
+    }
+
+    fun setPinned(timerId: Long, pinned: Boolean) {
+        viewModelScope.launch(Dispatchers.IO) {
+            timerService.setPinned(timerId, pinned)
+            _timers.value = timerService.getTimers()
+        }
     }
 }
