@@ -46,10 +46,12 @@ class HomeViewModel @Inject constructor(): ViewModel() {
         }
     }
 
-    fun deleteTimer(timerId: Long) {
-        viewModelScope.launch(Dispatchers.IO) {
-            timerService.deleteTimer(timerId)
-            _timers.value = timerService.getTimers()
-        }
+    private val _deletingTimer = MutableStateFlow(false)
+    val deletingTimer = _deletingTimer.asStateFlow()
+
+    suspend fun deleteTimer(timerId: Long) {
+        _deletingTimer.value = true
+        timerService.deleteTimer(timerId)
+        _deletingTimer.value = false
     }
 }

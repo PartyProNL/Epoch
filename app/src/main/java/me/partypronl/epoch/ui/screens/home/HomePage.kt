@@ -131,7 +131,7 @@ fun CreateTimerButton(openCreateSheet: () -> Unit) {
 fun CreateTimerFAB(openCreateSheet: () -> Unit) {
     ExtendedFloatingActionButton(
         text = { Text("Create") },
-        icon = { Icon(painterResource(R.drawable.baseline_timer_24), "Timer") },
+        icon = { Icon(painterResource(R.drawable.outline_timer_24), "Timer") },
         onClick = openCreateSheet
     )
 }
