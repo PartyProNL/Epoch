@@ -9,4 +9,9 @@ data class TimerModel(
     val name: String,
     val started: Long,
     val ends: Long
-)
+) {
+  fun getProgress(): Float {
+      val currentTime = System.currentTimeMillis()
+      return (currentTime - started) / (ends - started).toFloat()
+  }
+}

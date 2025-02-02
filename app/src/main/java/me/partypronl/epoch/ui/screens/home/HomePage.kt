@@ -39,7 +39,8 @@ fun HomePage(
     val timers by homeViewModel.timers.collectAsState()
 
     Scaffold(
-        floatingActionButton = { CreateTimerFAB() }
+        floatingActionButton = { CreateTimerFAB() },
+        containerColor = MaterialTheme.colorScheme.surfaceContainer
     ) { innerPadding ->
         if(loadingTimers) {
             LoadingTimers(Modifier.padding(innerPadding))
