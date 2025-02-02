@@ -93,11 +93,15 @@ fun HomePage(
         sheetState = sheetState,
         showBottomSheet = showBottomSheet,
         onDismissRequest = { showBottomSheet = false },
-        onFinish = {
+        onFinish = { timer ->
             scope.launch { sheetState.hide() }.invokeOnCompletion {
                 if (!sheetState.isVisible) {
                     showBottomSheet = false
                     homeViewModel.updateTimers()
+
+                    scope.launch {
+                        snackbarHostState.showSnackbar("Created a new timer named '${timer.name}'")
+                    }
                 }
             }
         }

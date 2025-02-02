@@ -16,9 +16,10 @@ class TimerService {
         timerDao.insert(timer)
     }
 
-    suspend fun createTimer(name: String, ends: Long) {
+    suspend fun createTimer(name: String, ends: Long): TimerModel {
         val timerModel = TimerModel(0L, name, System.currentTimeMillis(), ends, false)
         timerDao.insert(timerModel)
+        return timerModel
     }
 
     suspend fun deleteTimer(timerId: Long) {

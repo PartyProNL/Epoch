@@ -47,6 +47,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import me.partypronl.epoch.R
+import me.partypronl.epoch.data.models.TimerModel
 import me.partypronl.epoch.ui.util.TimePickerModal
 import java.util.TimeZone
 
@@ -56,7 +57,7 @@ fun CreateTimerSheet(
     sheetState: SheetState,
     showBottomSheet: Boolean,
     onDismissRequest: () -> Unit,
-    onFinish: () -> Unit,
+    onFinish: (TimerModel) -> Unit,
     viewModel: CreateTimerViewModel = hiltViewModel()
 ) {
     val name by viewModel.name.collectAsState()
@@ -153,8 +154,8 @@ fun CreateTimerSheet(
                     Button(
                         onClick = {
                             scope.launch(Dispatchers.IO) {
-                                viewModel.create()
-                                onFinish()
+                                val timer = viewModel.create()
+                                if(timer != null) onFinish(timer)
                             }
                         },
                         enabled = canCreate && !creating
