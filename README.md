@@ -1,5 +1,5 @@
 # Epoch
-Epoch is a simple **Android Compose** app that allows you to create countdowns to important events. You can create, edit view and delete timers in a simple and clean UI.
+Epoch is a simple **Android Compose** app that allows you to create countdowns to important events. You can create, edit, view and delete timers in a simple and clean UI.
 
 ## Technical features
 These are some of the technical features Epoch has:
