@@ -20,4 +20,8 @@ class TimerService {
         val timerModel = TimerModel(0L, name, System.currentTimeMillis(), ends, false)
         timerDao.insert(timerModel)
     }
+
+    suspend fun deleteTimer(timerId: Long) {
+        timerDao.deleteById(timerId)
+    }
 }

@@ -16,4 +16,7 @@ interface TimerDao {
 
     @Query("SELECT * FROM timer WHERE id = :id")
     suspend fun getById(id: Long): TimerModel?
+
+    @Query("DELETE FROM timer WHERE id = :id")
+    suspend fun deleteById(id: Long)
 }
